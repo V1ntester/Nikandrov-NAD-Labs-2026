@@ -279,7 +279,34 @@ position: relative;
     min-width: 0;
 }
 
-.cards-block > .container > .cards > a > .product-card {
+.product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.delete-form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.delete-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #263065;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.cards-block > .container > .cards .product-card {
     border: 1px solid #e5e7eb;
     border-radius: 32px;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 16px 40px -12px rgba(0, 0, 0, 0.08);

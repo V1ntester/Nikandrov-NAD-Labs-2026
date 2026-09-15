@@ -1,0 +1,30 @@
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, DateTime, func
+from db.base import Base
+
+class Reactor(Base):
+    __tablename__ = "reactors"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(100), nullable=False)
+    manufacturer = Column(String(100), nullable=False)
+    image_url = Column(String(255), nullable=True)
+    video_url = Column(String(255), nullable=True)
+
+    description = Column(String(500), nullable=True)
+    thermal_power = Column(Integer, nullable=True)
+    electrical_power = Column(Integer, nullable=True)
+
+    status = Column(String(20), nullable=False, default="draft", index=True)
+    creator = Column(String(150), nullable=False, default="anonymous")
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    formed_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )

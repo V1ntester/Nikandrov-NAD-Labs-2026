@@ -1,91 +1,119 @@
 <!DOCTYPE html>
-<html lang="rus">
-
+<html lang="ru">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Магазин</title>
+    <title>Добавление</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <body>
-    <div class="space">
-        <header class="header">
+<div class="space">
+    <header class="header">
+        <div class="container">
+            <div class="brand"><a href="/">НОВАТОМ</a></div>
+        </div>
+    </header>
+
+    <main class="content">
+        <article class="adding-block">
             <div class="container">
-                <div class="brand"><a href="/">НОВАТОМ</a></div>
-            </div>
-        </header>
-        <main class="content">
-            <article class="adding-block">
-                <div class="container">
-                    <h2 class="page-title">ЧЕРНОВИК</h2>
-                    <div class="fields-sections">
+                <h2 class="page-title">
+                    {% if reactor %}ПУБЛИКАЦИЯ{% else %}ЧЕРНОВИК{% endif %}
+                </h2>
 
-                        <div class="titles-section field-section">
-                            <h3>Заголовки</h3>
-                            <div class="name-field field">
-                                <span>Название</span>
-                                <input type="text" value="{{ reactor.name }}">
-                            </div>
-                            <div class="manufacturer-field field">
-                                <span>Производитель</span>
-                                <input type="text" value="{{ reactor.manufacturer }}">
-                            </div>
+                <form method="post" action="/adding" class="fields-sections">
+
+                    <div class="titles-section field-section">
+                        <h3>Заголовки</h3>
+
+                        <div class="name-field field">
+                            <span>Название</span>
+                            <input type="text" name="name" required
+                                   value="{{ reactor.name if reactor else '' }}">
                         </div>
 
-                        <div class="media-section field-section">
-                            <h3>Медиа</h3>
-                            <div class="image-field field">
-                                <span>Изображение</span>
-                                <label class="loader-with-background">
-                                    <input type="file" value="{{ reactor.image_url }}">
-                                    <span>Загрузить</span>   
-                                    <img src="{{ reactor.image_url }}" alt="">                                 
-                                </label>
-                            </div>
-                            <div class="video-field field">
-                                <span>Видео</span>
-                                <label class="loader">
-                                    <input type="file" value="{{ reactor.video_url }}">
-                                    <span>Загрузить</span>                                        
-                                </label>
-                            </div>
+                        <div class="manufacturer-field field">
+                            <span>Производитель</span>
+                            <input type="text" name="manufacturer" required
+                                   value="{{ reactor.manufacturer if reactor else '' }}">
                         </div>
-
-                        <div class="description-section field-section">
-                            <h3>Описание</h3>
-                            <div class="description-field field">
-                                <input type="text" value="{{ reactor.description }}">
-                            </div>
-                        </div>
-
-                        <div class="topic-section field-section">
-                            <h3>Поля по теме</h3>
-                            <div class="thermal-power-field field">
-                                <span>Тепловая мощность, МВт</span>
-                                <input type="text" value="{{ reactor.thermal_power }}">
-                            </div>
-                            <div class="electrical-power-field field">
-                                <span>Электрическая мощность, МВт</span>
-                                <input type="text" value="{{ reactor.electrical_power }}">
-                            </div>
-                        </div>
-
                     </div>
-                </div>
-            </article>
-        </main>
-        <footer class="footer">
-            <div class="container">
-                <nav class="navigation">
-                    <a href="/reactor/1">Лента</a>
-                    <a href="/adding">Добавление</a>
-                    <a href="/">Плитка</a>
-                </nav>
-            </div>
-        </footer>
-    </div>
-</body>
 
+                    <div class="media-section field-section">
+                        <h3>Медиа</h3>
+
+                        <div class="image-field field">
+                            <span>Изображение</span>
+
+                            <label class="loader-with-background">
+                                <input type="file" accept="image/*">
+                                <span>Загрузить</span>
+                                <img
+                                    src="{{ (reactor.image_url if reactor and reactor.image_url else default_image) }}"
+                                    alt=""
+                                    onerror="this.onerror=null;this.src='{{ default_image }}';">
+                            </label>
+
+                        </div>
+
+                        <div class="video-field field">
+                            <span>Видео</span>
+
+                            <label class="loader">
+                                <input type="file" accept="video/*">
+                                <span>Загрузить</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="action-btn">Далее</button>
+                </form>
+
+                {% if reactor %}
+                <form method="post" action="/adding/publish" class="fields-sections">
+
+                    <div class="description-section field-section">
+                        <h3>Описание</h3>
+                        <div class="description-field field">
+                            <input type="text" name="description"
+                                   value="{{ reactor.description or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="topic-section field-section">
+                        <h3>Поля по теме</h3>
+
+                        <div class="thermal-power-field field">
+                            <span>Тепловая мощность, МВт</span>
+                            <input type="number" name="thermal_power"
+                                   value="{{ reactor.thermal_power if reactor.thermal_power is not none else '' }}">
+                        </div>
+
+                        <div class="electrical-power-field field">
+                            <span>Электрическая мощность, МВт</span>
+                            <input type="number" name="electrical_power"
+                                   value="{{ reactor.electrical_power if reactor.electrical_power is not none else '' }}">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="action-btn">Опубликовать</button>
+                </form>
+                {% endif %}
+            </div>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <nav class="navigation">
+                <a href="/reactor/1">Лента</a>
+                <a href="/adding">Добавление</a>
+                <a href="/">Плитка</a>
+            </nav>
+        </div>
+    </footer>
+</div>
+</body>
 </html>

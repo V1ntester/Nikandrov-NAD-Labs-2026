@@ -9,7 +9,6 @@ reactors_db = [
         "description": "Компактный и модульный",
         "thermal_power": 250,
         "electrical_power": 77,
-        "likes": 1830
     },
     {
         "id": 2,
@@ -21,7 +20,6 @@ reactors_db = [
         "description": "Компактный и модульный",
         "thermal_power": 175,
         "electrical_power": 55,
-        "likes": 1830
     },
     {
         "id": 3,
@@ -33,7 +31,6 @@ reactors_db = [
         "description": "Компактный и модульный",
         "thermal_power": 330,
         "electrical_power": 100,
-        "likes": 0
     },
     {
         "id": 4,
@@ -45,6 +42,5 @@ reactors_db = [
         "description": "Компактный и модульный",
         "thermal_power": 175,
         "electrical_power": 55,
-        "likes": 0
     }
 ]
