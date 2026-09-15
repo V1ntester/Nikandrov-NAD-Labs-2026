@@ -27,7 +27,27 @@ input:focus {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    transition: .4s;
 }   
+
+.action-btn:hover {
+    background-color: #263065;
+    color: #ffffff;
+
+    transition: .4s;
+}
+
+.action-btn svg {
+    transition: .4s;
+}
+
+.action-btn:hover svg {
+    fill: #ffffff;
+    stroke: #ffffff;
+
+    transition: .4s;
+}
 
 .action-input {
     height: 50px;
