@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, func
+from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey
 from db.base import Base
 
 class Reactor(Base):
@@ -17,7 +17,7 @@ class Reactor(Base):
     electrical_power = Column(Integer, nullable=True)
 
     status = Column(String(20), nullable=False, default="draft", index=True)
-    creator = Column(String(150), nullable=False, default="anonymous")
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     created_at = Column(
         DateTime(timezone=True),
