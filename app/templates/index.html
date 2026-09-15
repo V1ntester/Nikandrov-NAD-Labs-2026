@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="rus">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Магазин</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="space">
+        <header class="header">
+            <div class="container">
+                <div class="brand"><a href="/">НОВАТОМ</a></div>
+            </div>
+        </header>
+        <main class="content">
+            <article class="cards-block">
+                <div class="container">
+                    <h2 class="page-title">МАЛЫЕ МОДУЛЬНЫЕ РЕАКТОРЫ</h2>
+                    <div class="cards">
+
+                        <div class="filter-card">
+                            <h3>От: тепловая мощность, МВт</h3>
+                            <form class="filter-controls">
+                                <div class="filter-action power-from">
+                                    <input class="action-input" type="number" name="thermal_power_from" placeholder="100"></div>
+                                <div class="filter-action find">
+                                    <input class="action-input" type="submit" value="Отправить">
+                                </div>
+                            </form>
+                        </div>
+                        
+                        {% for reactor in reactors %}
+                        <a href="/reactor/{{ reactor.id }}">
+                            <div class="product-card">
+                                <div class="image-container">
+                                    <img src="{{ reactor.image_url }}" alt="Реактор">
+                                </div>
+                                <div class="description">
+                                    <h4 class="manufacturer">{{ reactor.manufacturer }}</h4>
+                                    <h4 class="name">{{ reactor.name }}</h4>
+                                    <div class="likes">
+                                        <svg width="20" height="18" viewBox="0 0 20 18" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M11.252 2.11328C13.0717 0.36256 16.0316 0.36295 17.8516 2.11328H17.8525C19.6678 3.94907 19.6325 6.77901 17.8457 8.63672L17.8438 8.6377L10 16.8418L2.15625 8.6377L2.1543 8.63672L1.99219 8.45996C0.367323 6.60337 0.388131 3.89174 2.14648 2.11328C3.03426 1.21557 4.2187 0.822342 5.44727 0.822266C6.5991 0.822266 7.71161 1.16811 8.57812 1.95117L8.74805 2.11328L9.41992 2.82031L10 3.43164L10.5801 2.82031L11.252 2.11328Z"
+                                                stroke-width="1.6" />
+                                        </svg>
+                                        <span>1830</span>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </a>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </article>
+        </main>
+        <footer class="footer">
+            <div class="container">
+                <nav class="navigation">
+                    <a href="/reactor/1">Лента</a>
+                    <a href="/adding">Добавление</a>
+                    <a href="/">Плитка</a>
+                </nav>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
