@@ -51,10 +51,20 @@
                                         </svg>
                                     </a>
                                 </div>
-                                <div class="product-action"><button class="more">еще</button></div>
+                                <div class="product-action">
+                                    <label for="description-toggle" class="more">еще</label>
+                                </div>
                             </div>
                             <div class="product-description">
-                                <h2>{{ reactor.description }}...</h3>
+                                <input type="checkbox" id="description-toggle" class="description-toggle-checkbox">
+
+                                <div class="description-short">
+                                    <h2>{{ reactor.description|truncate(29, True, '...') }}</h2>
+                                </div>
+
+                                <label for="description-toggle" class="description-full">
+                                    <h2>{{ reactor.description }}</h2>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -66,10 +76,10 @@
         <footer class="footer">
             <div class="container">
                 <nav class="navigation">
-                    <a href="/reactor/1">Лента</a>
+                    <a href="/reactor/1?next=true">Лента</a>
                     <a href="/adding">Добавление</a>
                     <a href="/">Плитка</a>
-                </nav>
+                </nav>                
             </div>
         </footer>
     </div>

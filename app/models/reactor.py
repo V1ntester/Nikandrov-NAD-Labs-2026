@@ -1,5 +1,5 @@
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.sql import func
 from db.base import Base
 from models.user import User
 
@@ -19,13 +19,6 @@ class Reactor(Base):
 
     status = Column(String(20), nullable=False, default="draft", index=True)
     creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
-    created_at = Column(
-        DateTime(timezone=True),
-        nullable=False,
-        server_default=func.now(),
-    )
-    formed_at = Column(
-        DateTime(timezone=True),
-        nullable=True,
-    )
+    formed_at = Column(DateTime(timezone=True), nullable=True)
+    
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())

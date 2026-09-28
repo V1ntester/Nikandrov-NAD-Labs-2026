@@ -29,12 +29,14 @@ input:focus {
     align-items: center;
 
     transition: .4s;
+
+    font-size: 16px;
 }   
 
 .action-btn:hover {
-    background-color: #263065;
-    color: #ffffff;
-
+    background-color: #263065 !important;
+    color: #ffffff !important;
+    cursor: pointer;
     transition: .4s;
 }
 
@@ -53,15 +55,12 @@ input:focus {
     height: 50px;
     border-radius: 16px;
     padding: 0 18px;
+    font-size: 16px;
 }
 
 .action-btn > svg {
     fill: #263065;
     stroke: #263065;
-}
-
-.action-btn:hover {
-    cursor: pointer;
 }
 
 .container {
@@ -72,7 +71,7 @@ input:focus {
 } 
 
 .space {
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -81,6 +80,8 @@ input:focus {
     flex: 0 0 auto;
 
     width: 100%;
+    max-width: 394px;
+    margin: 0 auto;
     height: 65px;
 
     background-color: #000000;
@@ -106,10 +107,8 @@ input:focus {
 }
 
 .product-block {
-    height: calc(100vh - 65px - 85px);
-
-position: relative;
-
+    height: calc(100dvh - 65px - 85px);
+    position: relative;
     display: flex;
     justify-content: center;
 }
@@ -212,6 +211,7 @@ position: relative;
 }
 
 .product-controls > .product-action > .more {
+    display: inline-block;
     background: none;
     border: 0;
     padding: 1px 5px;
@@ -225,13 +225,38 @@ position: relative;
     margin-bottom: 20px;
 }
 
-.product-block-overlay > .overlay-footer > .product-description > h2 {
+.product-block-overlay > .overlay-footer > .product-description h2 {
     color: #ffffff;
     font-size: 16px;
     font-weight: 400;
 }
 
- .page-title {
+.description-short, .description-full {
+    max-width: 280px;
+}
+
+.description-toggle-checkbox {
+    display: none;
+}
+
+.description-short {
+    display: block;
+}
+
+.description-full {
+    display: none;
+    cursor: pointer;
+}
+
+.description-toggle-checkbox:checked ~ .description-short {
+    display: none;
+}
+
+.description-toggle-checkbox:checked ~ .description-full {
+    display: block;
+}
+
+.page-title {
     margin-top: 60px;
     font-size: 24px;
     font-weight: 600;
@@ -269,18 +294,70 @@ position: relative;
 }
 
 .filter-controls {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 20px;  
-}
-
-.filter-controls > .filter-action {
+    align-self: stretch;
     display: flex;
     flex-direction: column;
-    align-items: stretch; 
-    flex: 1;
+    justify-content: space-between; 
+}
+
+.filter-controls > .filter-range {
+    margin-bottom: 6px;
+}
+
+.filter-controls > .power-range {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.filter-controls > .power-range > .range-row {
+    flex: 1 1 0;
     min-width: 0;
+    display: flex;
+}
+
+.filter-controls > .power-range > .range-row > .action-range {
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 10px;
+    margin: 0;
+    padding: 0;
+    background-color: #263065;
+    outline: none;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.filter-controls > .power-range > .range-row:first-child > .action-range {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.filter-controls > .power-range > .range-row:last-child > .action-range {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.filter-controls > .power-range > .range-row > .action-range::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 10px;
+    background: transparent;
+    border-radius: inherit;
+}
+
+.filter-controls > .power-range > .range-row > .action-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #263065;
+    cursor: pointer;
 }
 
 .filter-controls > .filter-action > span {
@@ -326,11 +403,16 @@ position: relative;
     transition: color 0.2s ease;
 }
 
-.cards-block > .container > .cards .product-card {
+.cards > .product-item > a {
+    width: 100%;
+}
+
+.cards > .product-item > a > .product-card {
     border: 1px solid #e5e7eb;
     border-radius: 32px;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04), 0 16px 40px -12px rgba(0, 0, 0, 0.08);
     background: linear-gradient(90deg, #fff 0%, #f4f6fa 100%);
+    width: 100%;
 }
 
 .product-card > .image-container {
@@ -487,7 +569,9 @@ position: relative;
     flex: 0 0 auto;
     
     width: 100%;
+    max-width: 394px;
     height: 85px;
+    margin: 0 auto;
 
     background-color: #000000;
 }
@@ -503,7 +587,6 @@ position: relative;
 
 .footer > .container > .navigation > a {
     position: relative;
-    display: inline-block;
     color: #ffffff;
     text-decoration: none;
 }

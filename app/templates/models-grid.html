@@ -23,12 +23,35 @@
                     <div class="cards">
 
                         <div class="filter-card">
-                            <h3>От: тепловая мощность, МВт</h3>
-                            <form class="filter-controls">
-                                <div class="filter-action power-from">
-                                    <input class="action-input" type="number" name="thermal_power_from_param" placeholder="100" value="{{ thermal_power_from }}"></div>
+                            <h3>Тепловая мощность, МВт</h3>
+                            <form class="filter-controls" method="get">
+                                <span class="filter-range">От 100 до 500</span>
+                                <div class="filter-action power-range">
+                                    <div class="range-row">
+                                        <input
+                                            class="action-range"
+                                            type="range"
+                                            name="thermal_power_from_param"
+                                            min="100"
+                                            max="240"
+                                            step="10"
+                                            value="100"
+                                        >
+                                    </div>
+                                    <div class="range-row">
+                                        <input
+                                            class="action-range"
+                                            type="range"
+                                            name="thermal_power_to_param"
+                                            min="260"
+                                            max="500"
+                                            step="10"
+                                            value="500"
+                                        >
+                                    </div>
+                                </div>
                                 <div class="filter-action find">
-                                    <input class="action-input" type="submit" value="Найти">
+                                    <input class="action-input action-btn" type="submit" value="Найти">
                                 </div>
                             </form>
                         </div>
@@ -65,10 +88,10 @@
         <footer class="footer">
             <div class="container">
                 <nav class="navigation">
-                    <a href="/reactor/1">Лента</a>
+                    <a href="/reactor/1?next=true">Лента</a>
                     <a href="/adding">Добавление</a>
                     <a href="/">Плитка</a>
-                </nav>
+                </nav>                
             </div>
         </footer>
     </div>

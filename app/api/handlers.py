@@ -45,7 +45,7 @@ async def get_catalog(
 
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
+        name="models-grid.html",
         context={
             "reactors": reactors,
             "likes_map": likes_map,
@@ -73,12 +73,12 @@ async def get_adding(request: Request, db: AsyncSession = Depends(get_db)):
     if reactor is None:
         return templates.TemplateResponse(
             request=request,
-            name="adding.html",
+            name="add-reactor.html",
         )
     else:
         return templates.TemplateResponse(
             request=request,
-            name="adding.html",
+            name="add-reactor.html",
             context={"reactor": reactor},
         )    
 
@@ -149,6 +149,7 @@ async def get_reactor_detail(
         .where(Reactor.status == "formed")
         .order_by(Reactor.id)
     )
+
     result = await db.execute(stmt)
     published_ids = result.scalars().all()
 
@@ -167,8 +168,7 @@ async def get_reactor_detail(
         return RedirectResponse(url=f"/reactor/{next_id}", status_code=303)
 
     stmt = (
-        select(Reactor, func.count(Like.id).label("likes_count"))
-        .outerjoin(Like, Like.reactor_id == Reactor.id)
+        select(Reactor, func.count(Like.id).label("likes_count")).outerjoin(Like, Like.reactor_id == Reactor.id)
         .where(Reactor.id == reactor_id)
         .where(Reactor.status == "formed")
         .group_by(Reactor.id)
@@ -184,7 +184,7 @@ async def get_reactor_detail(
 
     return templates.TemplateResponse(
         request=request,
-        name="reactor.html",
+        name="small-modular-reactor.html",
         context={
             "reactor": reactor,
             "likes_count": likes_count,
