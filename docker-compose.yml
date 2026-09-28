@@ -25,8 +25,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ACCESS_KEY: rootminio
-      MINIO_SECRET_KEY: rootminio
+      MINIO_ROOT_USER: rootminio
+      MINIO_ROOT_PASSWORD: rootminio
       MINIO_CONSOLE_ADDRESS: ":9001"
     volumes:
       - minio-data:/data
