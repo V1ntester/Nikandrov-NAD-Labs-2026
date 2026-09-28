@@ -1,6 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey
 from db.base import Base
+from models.user import User
 
 class Reactor(Base):
     __tablename__ = "reactors"

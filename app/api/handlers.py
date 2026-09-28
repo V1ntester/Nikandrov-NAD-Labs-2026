@@ -14,7 +14,8 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 DEFAULT_IMAGE = "/static/img/DEFAULT-REACTOR.png"
-CURRENT_USER = "anonymous"
+DEFAULT_VIDEO = "/static/img/DEFAULT-REACTOR.mp4"
+CURRENT_USER = 1
 
 
 @router.get("/")
@@ -49,6 +50,7 @@ async def get_catalog(
             "reactors": reactors,
             "likes_map": likes_map,
             "default_image": DEFAULT_IMAGE,
+            "thermal_power_from": thermal_power_from,
         },
     )
 
@@ -57,7 +59,7 @@ async def _get_current_draft(db: AsyncSession) -> Reactor | None:
     stmt = (
         select(Reactor)
         .where(Reactor.status == "draft")
-        .where(Reactor.creator == CURRENT_USER)
+        .where(Reactor.creator_id == CURRENT_USER)
         .limit(1)
     )
     result = await db.execute(stmt)
@@ -98,7 +100,7 @@ async def post_adding(
             image_url=image_url or None,
             video_url=video_url or None,
             status="draft",
-            creator=CURRENT_USER,
+            creator_id=CURRENT_USER,
         )
         db.add(reactor)
     else:
@@ -171,6 +173,7 @@ async def get_reactor_detail(
         .where(Reactor.status == "formed")
         .group_by(Reactor.id)
     )
+    
     result = await db.execute(stmt)
     row = result.one_or_none()
 
@@ -185,7 +188,7 @@ async def get_reactor_detail(
         context={
             "reactor": reactor,
             "likes_count": likes_count,
-            "default_image": DEFAULT_IMAGE,
+            "default_video": DEFAULT_VIDEO,
         },
     )
 

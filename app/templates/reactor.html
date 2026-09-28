@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Магазин</title>
+    <title>Услуга</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
@@ -19,7 +19,7 @@
         <main class="content">
             <article class="product-block">
                 <video class="product-block-background" autoplay muted loop playsinline>
-                    <source src="{{ reactor.video_url }}" type="video/mp4">
+                    <source src="{{ reactor.video_url or default_video }}" type="video/mp4">
                 </video>
                 <div class="container">
                     <div class="product-block-overlay">

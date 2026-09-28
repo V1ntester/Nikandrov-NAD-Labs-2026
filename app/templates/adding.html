@@ -52,8 +52,7 @@
                                 <span>Загрузить</span>
                                 <img
                                     src="{{ (reactor.image_url if reactor and reactor.image_url else default_image) }}"
-                                    alt=""
-                                    onerror="this.onerror=null;this.src='{{ default_image }}';">
+                                    alt="">
                             </label>
 
                         </div>
@@ -67,8 +66,10 @@
                             </label>
                         </div>
                     </div>
-
+                    
+                    {% if not reactor %}
                     <button type="submit" class="action-btn">Далее</button>
+                    {% endif %}
                 </form>
 
                 {% if reactor %}
