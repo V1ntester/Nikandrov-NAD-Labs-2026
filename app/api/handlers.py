@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import APIRouter, Request, Depends, HTTPException, Form
+from fastapi import APIRouter, Request, Query, Depends, HTTPException, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from sqlalchemy import select, func, text
@@ -21,15 +21,17 @@ CURRENT_USER = 1
 @router.get("/")
 async def get_catalog(
     request: Request,
-    thermal_power_from_param: str = "",
+    thermal_power_min: int = Query(0, ge=0, description="Мин. тепловая мощность"),
+    thermal_power_max: int = Query(500, ge=0, description="Макс. тепловая мощность"),
     db: AsyncSession = Depends(get_db),
 ):
-    thermal_power_from = int(thermal_power_from_param) if thermal_power_from_param else None
 
-    stmt = select(Reactor).where(Reactor.status == "formed")
-    if thermal_power_from is not None:
-        stmt = stmt.where(Reactor.thermal_power >= thermal_power_from)
-
+    stmt = (
+        select(Reactor)
+        .where(Reactor.status == "formed")
+        .where(Reactor.thermal_power >= thermal_power_min)
+        .where(Reactor.thermal_power <= thermal_power_max)
+    )
     result = await db.execute(stmt)
     reactors = result.scalars().all()
 
@@ -50,7 +52,7 @@ async def get_catalog(
             "reactors": reactors,
             "likes_map": likes_map,
             "default_image": DEFAULT_IMAGE,
-            "thermal_power_from": thermal_power_from,
+            "filter_limits": {"min": thermal_power_min, "max": thermal_power_max},
         },
     )
 
