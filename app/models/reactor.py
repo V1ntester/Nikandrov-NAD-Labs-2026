@@ -10,8 +10,8 @@ class Reactor(Base):
 
     name = Column(String(100), nullable=False)
     manufacturer = Column(String(100), nullable=False)
-    image_url = Column(String(255), nullable=True)
-    video_url = Column(String(255), nullable=True)
+    image_url = Column(String(1000), nullable=True)
+    video_url = Column(String(1000), nullable=True)
 
     description = Column(String(500), nullable=True)
     thermal_power = Column(Integer, nullable=True)

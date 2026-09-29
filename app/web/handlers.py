@@ -10,15 +10,15 @@ from models.reactor import Reactor
 from models.like import Like
 
 
-router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+web_router = APIRouter()
+templates = Jinja2Templates(directory="web/templates")
 
 DEFAULT_IMAGE = "/static/img/DEFAULT-REACTOR.png"
 DEFAULT_VIDEO = "/static/img/DEFAULT-REACTOR.mp4"
 CURRENT_USER = 1
 
 
-@router.get("/")
+@web_router.get("/")
 async def get_catalog(
     request: Request,
     thermal_power_min: int = Query(0, ge=0, description="Мин. тепловая мощность"),
@@ -47,7 +47,7 @@ async def get_catalog(
 
     return templates.TemplateResponse(
         request=request,
-        name="models-grid.html",
+        name="reactors-grid.html",
         context={
             "reactors": reactors,
             "likes_map": likes_map,
@@ -68,7 +68,7 @@ async def _get_current_draft(db: AsyncSession) -> Reactor | None:
     return result.scalar_one_or_none()
 
 
-@router.get("/adding")
+@web_router.get("/adding")
 async def get_adding(request: Request, db: AsyncSession = Depends(get_db)):
     reactor = await _get_current_draft(db)
 
@@ -85,7 +85,7 @@ async def get_adding(request: Request, db: AsyncSession = Depends(get_db)):
         )    
 
 
-@router.post("/adding")
+@web_router.post("/adding")
 async def post_adding(
     name: str = Form(...),
     manufacturer: str = Form(...),
@@ -117,7 +117,7 @@ async def post_adding(
     return RedirectResponse(url="/adding", status_code=303)
 
 
-@router.post("/adding/publish")
+@web_router.post("/adding/publish")
 async def post_publish(
     description: str = Form(""),
     thermal_power: int | None = Form(None),
@@ -139,7 +139,7 @@ async def post_publish(
     return RedirectResponse(url="/", status_code=303)
 
 
-@router.get("/reactor/{reactor_id}")
+@web_router.get("/reactor/{reactor_id}")
 async def get_reactor_detail(
     request: Request,
     reactor_id: int,
@@ -195,7 +195,7 @@ async def get_reactor_detail(
     )
 
 
-@router.post("/reactor/{reactor_id}/delete")
+@web_router.post("/reactor/{reactor_id}/delete")
 async def delete_reactor(reactor_id: int, db: AsyncSession = Depends(get_db)):
     update_query = """
         UPDATE reactors
