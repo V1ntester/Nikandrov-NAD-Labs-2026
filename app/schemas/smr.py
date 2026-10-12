@@ -9,8 +9,8 @@ class SmrBase(BaseModel):
 class SmrCreate(SmrBase):
     name: str = Field(..., max_length=100)
     manufacturer: str = Field(..., max_length=100)
-    image_url: str = Field(..., max_length=1000)
-    video_url: str = Field(..., max_length=1000)
+    image_url: str | None = Field(None, max_length=1000)
+    video_url: str | None = Field(None, max_length=1000)
 
 
 class SmrPublish(SmrBase):
