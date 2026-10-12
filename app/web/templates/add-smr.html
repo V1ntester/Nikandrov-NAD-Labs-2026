@@ -20,7 +20,7 @@
         <article class="adding-block">
             <div class="container">
                 <h2 class="page-title">
-                    {% if reactor %}ПУБЛИКАЦИЯ{% else %}ЧЕРНОВИК{% endif %}
+                    {% if smr %}ПУБЛИКАЦИЯ{% else %}ЧЕРНОВИК{% endif %}
                 </h2>
 
                 <form method="post" action="/adding" class="fields-sections">
@@ -31,13 +31,13 @@
                         <div class="name-field field">
                             <span>Название</span>
                             <input type="text" name="name" required
-                                   value="{{ reactor.name if reactor else '' }}">
+                                   value="{{ smr.name if smr else '' }}">
                         </div>
 
                         <div class="manufacturer-field field">
                             <span>Производитель</span>
                             <input type="text" name="manufacturer" required
-                                   value="{{ reactor.manufacturer if reactor else '' }}">
+                                   value="{{ smr.manufacturer if smr else '' }}">
                         </div>
                     </div>
 
@@ -51,7 +51,7 @@
                                 <input type="file" accept="image/*">
                                 <span>Загрузить</span>
                                 <img
-                                    src="{{ (reactor.image_url if reactor and reactor.image_url else default_image) }}"
+                                    src="{{ (smr.image_url if smr and smr.image_url else default_image) }}"
                                     alt="">
                             </label>
 
@@ -67,19 +67,19 @@
                         </div>
                     </div>
                     
-                    {% if not reactor %}
+                    {% if not smr %}
                     <button type="submit" class="action-btn">Далее</button>
                     {% endif %}
                 </form>
 
-                {% if reactor %}
+                {% if smr %}
                 <form method="post" action="/adding/publish" class="fields-sections">
 
                     <div class="description-section field-section">
                         <h3>Описание</h3>
                         <div class="description-field field">
                             <input type="text" name="description"
-                                   value="{{ reactor.description or '' }}">
+                                   value="{{ smr.description or '' }}">
                         </div>
                     </div>
 
@@ -89,13 +89,13 @@
                         <div class="thermal-power-field field">
                             <span>Тепловая мощность, МВт</span>
                             <input type="number" name="thermal_power"
-                                   value="{{ reactor.thermal_power if reactor.thermal_power is not none else '' }}">
+                                   value="{{ smr.thermal_power if smr.thermal_power is not none else '' }}">
                         </div>
 
                         <div class="electrical-power-field field">
                             <span>Электрическая мощность, МВт</span>
                             <input type="number" name="electrical_power"
-                                   value="{{ reactor.electrical_power if reactor.electrical_power is not none else '' }}">
+                                   value="{{ smr.electrical_power if smr.electrical_power is not none else '' }}">
                         </div>
                     </div>
 
@@ -109,7 +109,7 @@
     <footer class="footer">
         <div class="container">
             <nav class="navigation">
-                <a href="/reactor/1?next=true">Лента</a>
+                <a href="/smr/1?next=true">Лента</a>
                 <a href="/adding">Добавление</a>
                 <a href="/">Плитка</a>
             </nav>                

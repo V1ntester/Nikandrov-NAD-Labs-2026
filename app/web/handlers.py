@@ -13,8 +13,8 @@ from models.like import Like
 web_router = APIRouter()
 templates = Jinja2Templates(directory="web/templates")
 
-DEFAULT_IMAGE = "/static/img/DEFAULT-REACTOR.png"
-DEFAULT_VIDEO = "/static/img/DEFAULT-REACTOR.mp4"
+DEFAULT_IMAGE = "/static/img/DEFAULT-SMR.png"
+DEFAULT_VIDEO = "/static/img/DEFAULT-SMR.mp4"
 CURRENT_USER = 1
 
 
@@ -33,23 +33,23 @@ async def get_catalog(
         .where(Smr.thermal_power <= thermal_power_max)
     )
     result = await db.execute(stmt)
-    reactors = result.scalars().all()
+    smrs = result.scalars().all()
 
-    reactor_ids = [r.id for r in reactors]
+    smr_ids = [r.id for r in smrs]
     likes_map = {}
-    if reactor_ids:
+    if smr_ids:
         likes_stmt = (
-            select(Like.reactor_id, func.count(Like.id))
-            .where(Like.reactor_id.in_(reactor_ids))
-            .group_by(Like.reactor_id)
+            select(Like.smr_id, func.count(Like.id))
+            .where(Like.smr_id.in_(smr_ids))
+            .group_by(Like.smr_id)
         )
         likes_map = dict((await db.execute(likes_stmt)).all())
 
     return templates.TemplateResponse(
         request=request,
-        name="reactors-grid.html",
+        name="smrs-grid.html",
         context={
-            "reactors": reactors,
+            "smrs": smrs,
             "likes_map": likes_map,
             "default_image": DEFAULT_IMAGE,
             "filter_limits": {"min": thermal_power_min, "max": thermal_power_max},
@@ -70,18 +70,18 @@ async def _get_current_draft(db: AsyncSession) -> Smr | None:
 
 @web_router.get("/adding")
 async def get_adding(request: Request, db: AsyncSession = Depends(get_db)):
-    reactor = await _get_current_draft(db)
+    smr = await _get_current_draft(db)
 
-    if reactor is None:
+    if smr is None:
         return templates.TemplateResponse(
             request=request,
-            name="add-reactor.html",
+            name="add-smr.html",
         )
     else:
         return templates.TemplateResponse(
             request=request,
-            name="add-reactor.html",
-            context={"reactor": reactor},
+            name="add-smr.html",
+            context={"smr": smr},
         )    
 
 
@@ -93,10 +93,10 @@ async def post_adding(
     video_url: str = Form(""),
     db: AsyncSession = Depends(get_db),
 ):
-    reactor = await _get_current_draft(db)
+    smr = await _get_current_draft(db)
 
-    if reactor is None:
-        reactor = Smr(
+    if smr is None:
+        smr = Smr(
             name=name,
             manufacturer=manufacturer,
             image_url=image_url or None,
@@ -104,15 +104,15 @@ async def post_adding(
             status="draft",
             creator_id=CURRENT_USER,
         )
-        db.add(reactor)
+        db.add(smr)
     else:
-        reactor.name = name
-        reactor.manufacturer = manufacturer
-        reactor.image_url = image_url or None
-        reactor.video_url = video_url or None
+        smr.name = name
+        smr.manufacturer = manufacturer
+        smr.image_url = image_url or None
+        smr.video_url = video_url or None
 
     await db.commit()
-    await db.refresh(reactor)
+    await db.refresh(smr)
 
     return RedirectResponse(url="/adding", status_code=303)
 
@@ -124,25 +124,25 @@ async def post_publish(
     electrical_power: int | None = Form(None),
     db: AsyncSession = Depends(get_db),
 ):
-    reactor = await _get_current_draft(db)
-    if reactor is None:
+    smr = await _get_current_draft(db)
+    if smr is None:
         raise HTTPException(status_code=404, detail="Draft not found")
 
-    reactor.description = description
-    reactor.thermal_power = thermal_power
-    reactor.electrical_power = electrical_power
-    reactor.status = "formed"
-    reactor.formed_at = datetime.utcnow()
+    smr.description = description
+    smr.thermal_power = thermal_power
+    smr.electrical_power = electrical_power
+    smr.status = "formed"
+    smr.formed_at = datetime.utcnow()
 
     await db.commit()
 
     return RedirectResponse(url="/", status_code=303)
 
 
-@web_router.get("/reactor/{reactor_id}")
-async def get_reactor_detail(
+@web_router.get("/smr/{smr_id}")
+async def get_smr_detail(
     request: Request,
-    reactor_id: int,
+    smr_id: int,
     next: bool | None = None,
     db: AsyncSession = Depends(get_db),
 ):
@@ -158,7 +158,7 @@ async def get_reactor_detail(
     if next and published_ids:
         current_index = None
         for i, rid in enumerate(published_ids):
-            if rid == reactor_id:
+            if rid == smr_id:
                 current_index = i
                 break
 
@@ -167,11 +167,11 @@ async def get_reactor_detail(
         else:
             next_id = published_ids[0]
 
-        return RedirectResponse(url=f"/reactor/{next_id}", status_code=303)
+        return RedirectResponse(url=f"/smr/{next_id}", status_code=303)
 
     stmt = (
-        select(Smr, func.count(Like.id).label("likes_count")).outerjoin(Like, Like.reactor_id == Smr.id)
-        .where(Smr.id == reactor_id)
+        select(Smr, func.count(Like.id).label("likes_count")).outerjoin(Like, Like.smr_id == Smr.id)
+        .where(Smr.id == smr_id)
         .where(Smr.status == "formed")
         .group_by(Smr.id)
     )
@@ -180,30 +180,30 @@ async def get_reactor_detail(
     row = result.one_or_none()
 
     if row is None:
-        raise HTTPException(status_code=404, detail="Reactor not found")
+        raise HTTPException(status_code=404, detail="SMR not found")
 
-    reactor, likes_count = row
+    smr, likes_count = row
 
     return templates.TemplateResponse(
         request=request,
-        name="small-modular-reactor.html",
+        name="small-modular-smr.html",
         context={
-            "reactor": reactor,
+            "smr": smr,
             "likes_count": likes_count,
             "default_video": DEFAULT_VIDEO,
         },
     )
 
 
-@web_router.post("/reactor/{reactor_id}/delete")
-async def delete_reactor(reactor_id: int, db: AsyncSession = Depends(get_db)):
+@web_router.post("/smr/{smr_id}/delete")
+async def delete_smr(smr_id: int, db: AsyncSession = Depends(get_db)):
     update_query = """
-        UPDATE reactors
+        UPDATE smrs
         SET status = 'deleted'
         WHERE id = :id
     """
 
-    await db.execute(text(update_query), {"id": reactor_id})
+    await db.execute(text(update_query), {"id": smr_id})
     await db.commit()
 
     return RedirectResponse(url="/", status_code=303)

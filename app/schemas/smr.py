@@ -37,7 +37,7 @@ class SmrOut(SmrBase):
 
 
 class SmrListResponse(BaseModel):
-    reactors: list[SmrOut]
+    smrs: list[SmrOut]
 
 
 class SmrLike(BaseModel):
