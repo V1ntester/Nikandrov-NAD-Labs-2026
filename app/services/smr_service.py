@@ -37,6 +37,12 @@ class SmrService:
     ) -> Smr | None:
         return await self.smr_repo.get_next_by_id(smr_id)
 
+    async def get_draft(
+        self,
+        creator_id: int
+    ) -> Smr | None:
+        return await self.smr_repo.get_draft(creator_id)
+
     async def create(
         self,
         payload: SmrCreate,
@@ -49,6 +55,7 @@ class SmrService:
             manufacturer = payload.manufacturer,
             image_url = image_url,
             video_url = video_url,
+            status = "draft",
             creator_id = creator_id
         )
 
@@ -72,7 +79,7 @@ class SmrService:
         smr.status = "formed"
         smr.formed_at = datetime.now(timezone.utc)
 
-        smr = self.smr_repo.update(smr)
+        smr = await self.smr_repo.update(smr)
         await self.db.commit()
         return smr
 
@@ -94,6 +101,11 @@ class SmrService:
         user_id: int,
         smr_id: int
     ) -> Smr | None:
+        like = await self.like_repo.get(user_id, smr_id)
+
+        if like is not None:
+            return like
+        
         like = Like(
             user_id = user_id,
             smr_id = smr_id
@@ -108,13 +120,8 @@ class SmrService:
         user_id: int,
         smr_id: int
     ) -> Smr | None:
-        like = await self.like_repo.get(
-            user_id=user_id,
-            smr_id=smr_id
-        )
-
+        like = await self.like_repo.get(user_id=user_id, smr_id=smr_id)
         if like is not None:
             await self.like_repo.delete(like)
             await self.db.commit()
-
         return like

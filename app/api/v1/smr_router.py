@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, File, UploadFile, Form
+from fastapi import APIRouter, Depends, File, UploadFile, Form, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.singleton import CREATOR
@@ -24,11 +24,21 @@ SmrServiceDep = Annotated[SmrService, Depends(get_smr_service)]
 @smr_router.get("/smrs")
 async def get_smrs(
     service: SmrServiceDep,
-    filter_max: int = None,
-    filter_min: int = None
+    filter_min: int | None = None,
+    filter_max: int | None = None
 ):
-    smrs = await service.get_all(filter_max, filter_min)
+    smrs = await service.get_all(filter_min, filter_max)
     return {"smrs": smrs}
+
+
+@smr_router.get("/smrs/draft")
+async def get_draft(
+    service: SmrServiceDep,
+):
+    smr = await service.get_draft(CREATOR.id)
+    if smr is None:
+        raise HTTPException(404)
+    return smr
 
 
 @smr_router.get("/smrs/{smr_id}")
@@ -41,6 +51,10 @@ async def get_smr(
         smr = await service.get_next_by_id(smr_id)
     else:
         smr = await service.get_by_id(smr_id)
+
+    if smr is None:
+        raise HTTPException(404)
+
     return smr
 
 
@@ -70,21 +84,21 @@ async def create_smr(
     smr = SmrCreate(
         name=name,
         manufacturer=manufacturer,
-        image_url=image_url,
-        video_url=video_url
     )
 
-    smr = await service.create(smr)
+    smr = await service.create(smr, CREATOR.id, image_url, video_url)
     return smr
 
 
-@smr_router.put("/smrs/{smr_id}/publish")
+@smr_router.put("/smrs/draft/publish")
 async def publish_smr(
     service: SmrServiceDep,
-    smr_id: int,
     payload: SmrPublish
 ):
-    return await service.publish(smr_id, CREATOR.id, payload)
+    smr = await service.publish(payload, CREATOR.id)
+    if smr is None:
+        raise HTTPException(404)
+    return smr
 
 
 @smr_router.delete("/smrs/{smr_id}")
@@ -92,7 +106,10 @@ async def delete_smr(
     service: SmrServiceDep,
     smr_id: int,
     ):
-    return await service.delete(smr_id, CREATOR.id)
+    smr = await service.delete(smr_id, CREATOR.id)
+    if smr is None:
+        raise HTTPException(404)
+    return smr
 
 
 @smr_router.post("/smrs/{smr_id}/like")
