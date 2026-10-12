@@ -186,7 +186,7 @@ async def get_smr_detail(
 
     return templates.TemplateResponse(
         request=request,
-        name="small-modular-smr.html",
+        name="smr.html",
         context={
             "smr": smr,
             "likes_count": likes_count,
