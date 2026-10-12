@@ -21,7 +21,7 @@ def get_smr_service(
 SmrServiceDep = Annotated[SmrService, Depends(get_smr_service)]
 
 
-@smr_router.get("/smrs")
+@smr_router.get("/smrs", summary="Получить список СМР с фильтрацией по цене", tags=["SMR"])
 async def get_smrs(
     service: SmrServiceDep,
     filter_min: int | None = None,
@@ -31,7 +31,7 @@ async def get_smrs(
     return {"smrs": smrs}
 
 
-@smr_router.get("/smrs/draft")
+@smr_router.get("/smrs/draft", summary="Получить черновик текущего пользователя", tags=["SMR"])
 async def get_draft(
     service: SmrServiceDep,
 ):
@@ -41,7 +41,7 @@ async def get_draft(
     return smr
 
 
-@smr_router.get("/smrs/{smr_id}")
+@smr_router.get("/smrs/{smr_id}", summary="Получить СМР по ID", tags=["SMR"])
 async def get_smr(
     service: SmrServiceDep,
     smr_id: int,
@@ -54,7 +54,7 @@ async def get_smr(
     return smr
 
 
-@smr_router.post("/smrs")
+@smr_router.post("/smrs", summary="Создать новый СМР с изображением и видео", tags=["SMR"])
 async def create_smr(
     service: SmrServiceDep,
     name: str = Form(...),
@@ -86,7 +86,7 @@ async def create_smr(
     return smr
 
 
-@smr_router.put("/smrs/draft/publish")
+@smr_router.put("/smrs/draft/publish", summary="Опубликовать черновик СМР", tags=["SMR"])
 async def publish_smr(
     service: SmrServiceDep,
     payload: SmrPublish
@@ -97,7 +97,7 @@ async def publish_smr(
     return smr
 
 
-@smr_router.delete("/smrs/{smr_id}")
+@smr_router.delete("/smrs/{smr_id}", summary="Удалить СМР по ID", tags=["SMR"])
 async def delete_smr(
     service: SmrServiceDep,
     smr_id: int,
@@ -108,7 +108,7 @@ async def delete_smr(
     return smr
 
 
-@smr_router.post("/smrs/{smr_id}/like")
+@smr_router.post("/smrs/{smr_id}/like", summary="Поставить или убрать лайк СМР", tags=["SMR"])
 async def like_smr(
     service: SmrServiceDep,
     smr_id: int,

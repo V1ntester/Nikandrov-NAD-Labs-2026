@@ -18,7 +18,7 @@ DEFAULT_VIDEO = "/static/img/DEFAULT-REACTOR.mp4"
 CURRENT_USER = 1
 
 
-@web_router.get("/")
+@web_router.get("/", include_in_schema=False)
 async def get_catalog(
     request: Request,
     thermal_power_min: int = Query(0, ge=0, description="Мин. тепловая мощность"),
@@ -68,7 +68,7 @@ async def _get_current_draft(db: AsyncSession) -> Smr | None:
     return result.scalar_one_or_none()
 
 
-@web_router.get("/adding")
+@web_router.get("/adding", include_in_schema=False)
 async def get_adding(request: Request, db: AsyncSession = Depends(get_db)):
     reactor = await _get_current_draft(db)
 
@@ -85,7 +85,7 @@ async def get_adding(request: Request, db: AsyncSession = Depends(get_db)):
         )    
 
 
-@web_router.post("/adding")
+@web_router.post("/adding", include_in_schema=False)
 async def post_adding(
     name: str = Form(...),
     manufacturer: str = Form(...),
@@ -117,7 +117,7 @@ async def post_adding(
     return RedirectResponse(url="/adding", status_code=303)
 
 
-@web_router.post("/adding/publish")
+@web_router.post("/adding/publish", include_in_schema=False)
 async def post_publish(
     description: str = Form(""),
     thermal_power: int | None = Form(None),
@@ -139,7 +139,7 @@ async def post_publish(
     return RedirectResponse(url="/", status_code=303)
 
 
-@web_router.get("/reactor/{reactor_id}")
+@web_router.get("/reactor/{reactor_id}", include_in_schema=False)
 async def get_reactor_detail(
     request: Request,
     reactor_id: int,
@@ -195,7 +195,7 @@ async def get_reactor_detail(
     )
 
 
-@web_router.post("/reactor/{reactor_id}/delete")
+@web_router.post("/reactor/{reactor_id}/delete", include_in_schema=False)
 async def delete_reactor(reactor_id: int, db: AsyncSession = Depends(get_db)):
     update_query = """
         UPDATE reactors

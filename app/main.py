@@ -4,7 +4,10 @@ import uvicorn
 from web.handlers import web_router
 from api.api_router import api_router
 
-app = FastAPI(title="SMR Catalog App")
+app = FastAPI(
+    title="SMR Catalog App",
+    docs_url="/docs",
+)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(web_router)

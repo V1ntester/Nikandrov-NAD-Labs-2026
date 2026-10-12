@@ -20,7 +20,7 @@ def get_user_service(
 UserServiceDep = Annotated[UserService, Depends(get_user_service)]
 
 
-@user_router.post("/auth/register")
+@user_router.post("/auth/register", summary="Регистрация нового пользователя", tags=["User"])
 async def register(
     service: UserServiceDep,
     payload: UserCreate
@@ -28,7 +28,7 @@ async def register(
     return await service.create(payload)
 
 
-@user_router.post("/auth/login")
+@user_router.post("/auth/login", summary="Авторизация пользователя", tags=["User"])
 async def login():
     response = JSONResponse(
         status_code=200,
@@ -38,7 +38,7 @@ async def login():
     return response
 
 
-@user_router.post("/auth/logout")
+@user_router.post("/auth/logout", summary="Выход из аккаунта", tags=["User"])
 async def logout():
     response = JSONResponse(
         status_code=200,
