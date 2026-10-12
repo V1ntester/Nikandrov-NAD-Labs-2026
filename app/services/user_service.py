@@ -24,3 +24,9 @@ class UserService:
         user = await self.user_repo.add(user)
         await self.db.commit()
         return user
+
+    async def authenticate(self, username: str, password: str) -> User | None:
+        user = await self.user_repo.get_by_username(username)
+        if user and user.password_hash == password:
+            return user
+        return None

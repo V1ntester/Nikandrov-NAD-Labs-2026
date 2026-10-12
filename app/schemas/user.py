@@ -15,3 +15,8 @@ class UserOut(UserBase):
 
     id: int
     username: str
+
+
+class UserLogin(UserBase):
+    username: str = Field(..., max_length=50)
+    password: str = Field(..., max_length=255)
