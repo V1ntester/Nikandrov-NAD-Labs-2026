@@ -2,24 +2,24 @@ from datetime import datetime, timezone
 from pydantic import BaseModel, Field, ConfigDict
 
 
-class ReactorBase(BaseModel):
+class SmrBase(BaseModel):
     pass
 
 
-class ReactorCreate(ReactorBase):
+class SmrCreate(SmrBase):
     name: str = Field(..., max_length=100)
     manufacturer: str = Field(..., max_length=100)
     image_url: str = Field(..., max_length=1000)
     video_url: str = Field(..., max_length=1000)
 
 
-class ReactorPublish(ReactorBase):
+class SmrPublish(SmrBase):
     description: str = Field(..., max_length=500)
     thermal_power: int = Field(...)
     electrical_power: int = Field(...)
 
 
-class ReactorOut(ReactorBase):
+class SmrOut(SmrBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -36,9 +36,9 @@ class ReactorOut(ReactorBase):
     created_at: datetime
 
 
-class ReactorListResponse(BaseModel):
-    reactors: list[ReactorOut]
+class SmrListResponse(BaseModel):
+    reactors: list[SmrOut]
 
 
-class ReactorLike(BaseModel):
+class SmrLike(BaseModel):
     action: int = Field(...)

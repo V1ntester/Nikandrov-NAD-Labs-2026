@@ -3,8 +3,8 @@ from sqlalchemy.sql import func
 from db.base import Base
 from models.user import User
 
-class Reactor(Base):
-    __tablename__ = "reactors"
+class Smr(Base):
+    __tablename__ = "smrs"
 
     id = Column(Integer, primary_key=True, index=True)
 

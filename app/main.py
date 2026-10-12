@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 from web.handlers import web_router
-from api.router import api_router
+from api.api_router import api_router
 
 app = FastAPI(title="SMR Catalog App")
 

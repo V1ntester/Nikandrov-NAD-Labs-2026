@@ -8,7 +8,7 @@ from alembic import context
 from core.config import settings
 from db.base import Base
 
-from models.reactor import Reactor
+from models.smr import Smr
 from models.user import User
 from models.like import Like
 

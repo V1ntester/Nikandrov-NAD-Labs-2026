@@ -7,7 +7,7 @@ class Like(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    reactor_id = Column(Integer, ForeignKey("reactors.id"), nullable=False)
+    smr_id = Column(Integer, ForeignKey("smrs.id"), nullable=False)
 
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     

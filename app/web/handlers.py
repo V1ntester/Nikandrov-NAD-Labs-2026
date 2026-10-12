@@ -6,7 +6,7 @@ from sqlalchemy import select, func, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.session import get_db
-from models.reactor import Reactor
+from models.smr import Smr
 from models.like import Like
 
 
@@ -27,10 +27,10 @@ async def get_catalog(
 ):
 
     stmt = (
-        select(Reactor)
-        .where(Reactor.status == "formed")
-        .where(Reactor.thermal_power >= thermal_power_min)
-        .where(Reactor.thermal_power <= thermal_power_max)
+        select(Smr)
+        .where(Smr.status == "formed")
+        .where(Smr.thermal_power >= thermal_power_min)
+        .where(Smr.thermal_power <= thermal_power_max)
     )
     result = await db.execute(stmt)
     reactors = result.scalars().all()
@@ -57,11 +57,11 @@ async def get_catalog(
     )
 
 
-async def _get_current_draft(db: AsyncSession) -> Reactor | None:
+async def _get_current_draft(db: AsyncSession) -> Smr | None:
     stmt = (
-        select(Reactor)
-        .where(Reactor.status == "draft")
-        .where(Reactor.creator_id == CURRENT_USER)
+        select(Smr)
+        .where(Smr.status == "draft")
+        .where(Smr.creator_id == CURRENT_USER)
         .limit(1)
     )
     result = await db.execute(stmt)
@@ -96,7 +96,7 @@ async def post_adding(
     reactor = await _get_current_draft(db)
 
     if reactor is None:
-        reactor = Reactor(
+        reactor = Smr(
             name=name,
             manufacturer=manufacturer,
             image_url=image_url or None,
@@ -147,9 +147,9 @@ async def get_reactor_detail(
     db: AsyncSession = Depends(get_db),
 ):
     stmt = (
-        select(Reactor.id)
-        .where(Reactor.status == "formed")
-        .order_by(Reactor.id)
+        select(Smr.id)
+        .where(Smr.status == "formed")
+        .order_by(Smr.id)
     )
 
     result = await db.execute(stmt)
@@ -170,10 +170,10 @@ async def get_reactor_detail(
         return RedirectResponse(url=f"/reactor/{next_id}", status_code=303)
 
     stmt = (
-        select(Reactor, func.count(Like.id).label("likes_count")).outerjoin(Like, Like.reactor_id == Reactor.id)
-        .where(Reactor.id == reactor_id)
-        .where(Reactor.status == "formed")
-        .group_by(Reactor.id)
+        select(Smr, func.count(Like.id).label("likes_count")).outerjoin(Like, Like.reactor_id == Smr.id)
+        .where(Smr.id == reactor_id)
+        .where(Smr.status == "formed")
+        .group_by(Smr.id)
     )
     
     result = await db.execute(stmt)
