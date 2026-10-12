@@ -47,14 +47,10 @@ async def get_smr(
     smr_id: int,
     select_next: bool = False
 ):
-    if select_next:
-        smr = await service.get_next_by_id(smr_id)
-    else:
-        smr = await service.get_by_id(smr_id)
-
+    smr = await (service.get_next_by_id(smr_id) if select_next
+                 else service.get_by_id(smr_id))
     if smr is None:
         raise HTTPException(404)
-
     return smr
 
 
@@ -105,7 +101,7 @@ async def publish_smr(
 async def delete_smr(
     service: SmrServiceDep,
     smr_id: int,
-    ):
+):
     smr = await service.delete(smr_id, CREATOR.id)
     if smr is None:
         raise HTTPException(404)
@@ -118,7 +114,8 @@ async def like_smr(
     smr_id: int,
     payload: SmrLike
 ):
-    if payload.action:
-        return await service.like(CREATOR.id, smr_id)
-    else:
-        return await service.unlike(CREATOR.id, smr_id)
+    result = await (service.like(CREATOR.id, smr_id) if payload.action
+                    else service.unlike(CREATOR.id, smr_id))
+    if result is None:
+        raise HTTPException(404)
+    return result

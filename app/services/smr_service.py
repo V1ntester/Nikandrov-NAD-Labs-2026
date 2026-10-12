@@ -100,15 +100,20 @@ class SmrService:
         self,
         user_id: int,
         smr_id: int
-    ) -> Smr | None:
+    ) -> Like | None:
+        smr = await self.smr_repo.get_by_id(smr_id)
+
+        if smr is None or smr.status == "deleted":
+            return None
+
         like = await self.like_repo.get(user_id, smr_id)
 
         if like is not None:
             return like
-        
+
         like = Like(
-            user_id = user_id,
-            smr_id = smr_id
+            user_id=user_id,
+            smr_id=smr_id
         )
 
         like = await self.like_repo.add(like)
@@ -119,7 +124,7 @@ class SmrService:
         self,
         user_id: int,
         smr_id: int
-    ) -> Smr | None:
+    ) -> Like | None:
         like = await self.like_repo.get(user_id=user_id, smr_id=smr_id)
         if like is not None:
             await self.like_repo.delete(like)
