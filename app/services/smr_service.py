@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.singleton import CREATOR
 from models.smr import Smr
 from models.like import Like
 from schemas.smr import SmrCreate, SmrPublish

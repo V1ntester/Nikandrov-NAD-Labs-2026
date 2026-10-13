@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, File, UploadFile, Form, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.v1.dependencies import CurrentUser
+from api.v1.dependencies import CurrentUser, CreatorUser
 from db.session import get_db
 from services.smr_service import SmrService
 from storage.service import upload_file
@@ -34,7 +34,7 @@ async def get_smrs(
 @smr_router.get("/smrs/draft", summary="Получить черновик текущего пользователя", tags=["SMR"])
 async def get_draft(
     service: SmrServiceDep,
-    current_user: CurrentUser,
+    current_user: CreatorUser,
 ):
     smr = await service.get_draft(current_user.id)
     if smr is None:
@@ -58,7 +58,7 @@ async def get_smr(
 @smr_router.post("/smrs", summary="Создать новый SMR с изображением и видео", tags=["SMR"])
 async def create_smr(
     service: SmrServiceDep,
-    current_user: CurrentUser,
+    current_user: CreatorUser,
     name: str = Form(...),
     manufacturer: str = Form(...),
     image: UploadFile | None = File(None),
@@ -91,7 +91,7 @@ async def create_smr(
 @smr_router.put("/smrs/draft/publish", summary="Опубликовать черновик SMR", tags=["SMR"])
 async def publish_smr(
     service: SmrServiceDep,
-    current_user: CurrentUser,
+    current_user: CreatorUser,
     payload: SmrPublish
 ):
     smr = await service.publish(payload, current_user.id)
@@ -103,7 +103,7 @@ async def publish_smr(
 @smr_router.delete("/smrs/{smr_id}", summary="Удалить SMR по ID", tags=["SMR"])
 async def delete_smr(
     service: SmrServiceDep,
-    current_user: CurrentUser,
+    current_user: CreatorUser,
     smr_id: int,
 ):
     smr = await service.delete(smr_id, current_user.id)
