@@ -39,4 +39,4 @@ class LikeRepository:
             like: Like
     ) -> None:
         self.db.delete(like)
-        self.db.flush()
+        await self.db.flush()

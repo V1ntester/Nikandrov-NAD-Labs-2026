@@ -33,6 +33,7 @@ async def login(
 
     session_id = await sessions.create_session(str(user.id))
 
+    response.status_code = 200
     response.set_cookie(
         key=SESSION_COOKIE,
         value=session_id,
@@ -58,6 +59,7 @@ async def logout(
     if session_id:
         await sessions.delete_session(session_id)
 
+    response.status_code = 204
     response.delete_cookie(
         SESSION_COOKIE,
         path="/",

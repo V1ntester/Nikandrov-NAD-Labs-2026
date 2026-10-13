@@ -26,6 +26,12 @@ class UserService:
         await self.db.commit()
         return user
 
+    async def get_by_id(
+        self,
+        user_id: int
+    ) -> User | None:
+        return await self.user_repo.get_by_id(user_id)
+
     async def authenticate(self, username: str, password: str) -> User | None:
         user = await self.user_repo.get_by_username(username)
         if user and user.password_hash == password:

@@ -39,7 +39,7 @@ async def get_catalog(
     likes_map = {}
     if smr_ids:
         likes_stmt = (
-            select(Like.smr_id, func.count(Like.id))
+            select(Like.smr_id, func.count(Like.user_id))
             .where(Like.smr_id.in_(smr_ids))
             .group_by(Like.smr_id)
         )
@@ -170,7 +170,7 @@ async def get_smr_detail(
         return RedirectResponse(url=f"/smr/{next_id}", status_code=303)
 
     stmt = (
-        select(Smr, func.count(Like.id).label("likes_count")).outerjoin(Like, Like.smr_id == Smr.id)
+        select(Smr, func.count(Like.user_id).label("likes_count")).outerjoin(Like, Like.smr_id == Smr.id)
         .where(Smr.id == smr_id)
         .where(Smr.status == "formed")
         .group_by(Smr.id)
