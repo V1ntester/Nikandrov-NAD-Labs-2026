@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, File, UploadFile, Form, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.singleton import CREATOR
+from api.v1.dependencies import CurrentUser
 from db.session import get_db
 from services.smr_service import SmrService
 from storage.service import upload_file
@@ -21,7 +21,7 @@ def get_smr_service(
 SmrServiceDep = Annotated[SmrService, Depends(get_smr_service)]
 
 
-@smr_router.get("/smrs", summary="Получить список СМР с фильтрацией по цене", tags=["SMR"])
+@smr_router.get("/smrs", summary="Получить список SMR с фильтрацией по цене", tags=["SMR"])
 async def get_smrs(
     service: SmrServiceDep,
     filter_min: int | None = None,
@@ -34,14 +34,15 @@ async def get_smrs(
 @smr_router.get("/smrs/draft", summary="Получить черновик текущего пользователя", tags=["SMR"])
 async def get_draft(
     service: SmrServiceDep,
+    current_user: CurrentUser,
 ):
-    smr = await service.get_draft(CREATOR.id)
+    smr = await service.get_draft(current_user.id)
     if smr is None:
         raise HTTPException(404)
     return smr
 
 
-@smr_router.get("/smrs/{smr_id}", summary="Получить СМР по ID", tags=["SMR"])
+@smr_router.get("/smrs/{smr_id}", summary="Получить SMR по ID", tags=["SMR"])
 async def get_smr(
     service: SmrServiceDep,
     smr_id: int,
@@ -54,9 +55,10 @@ async def get_smr(
     return smr
 
 
-@smr_router.post("/smrs", summary="Создать новый СМР с изображением и видео", tags=["SMR"])
+@smr_router.post("/smrs", summary="Создать новый SMR с изображением и видео", tags=["SMR"])
 async def create_smr(
     service: SmrServiceDep,
+    current_user: CurrentUser,
     name: str = Form(...),
     manufacturer: str = Form(...),
     image: UploadFile | None = File(None),
@@ -82,40 +84,43 @@ async def create_smr(
         manufacturer=manufacturer,
     )
 
-    smr = await service.create(smr, CREATOR.id, image_url, video_url)
+    smr = await service.create(smr, current_user.id, image_url, video_url)
     return smr
 
 
-@smr_router.put("/smrs/draft/publish", summary="Опубликовать черновик СМР", tags=["SMR"])
+@smr_router.put("/smrs/draft/publish", summary="Опубликовать черновик SMR", tags=["SMR"])
 async def publish_smr(
     service: SmrServiceDep,
+    current_user: CurrentUser,
     payload: SmrPublish
 ):
-    smr = await service.publish(payload, CREATOR.id)
+    smr = await service.publish(payload, current_user.id)
     if smr is None:
         raise HTTPException(404)
     return smr
 
 
-@smr_router.delete("/smrs/{smr_id}", summary="Удалить СМР по ID", tags=["SMR"])
+@smr_router.delete("/smrs/{smr_id}", summary="Удалить SMR по ID", tags=["SMR"])
 async def delete_smr(
     service: SmrServiceDep,
+    current_user: CurrentUser,
     smr_id: int,
 ):
-    smr = await service.delete(smr_id, CREATOR.id)
+    smr = await service.delete(smr_id, current_user.id)
     if smr is None:
         raise HTTPException(404)
     return smr
 
 
-@smr_router.post("/smrs/{smr_id}/like", summary="Поставить или убрать лайк СМР", tags=["SMR"])
+@smr_router.post("/smrs/{smr_id}/like", summary="Поставить или убрать лайк SMR", tags=["SMR"])
 async def like_smr(
     service: SmrServiceDep,
+    current_user: CurrentUser,
     smr_id: int,
     payload: SmrLike
 ):
-    result = await (service.like(CREATOR.id, smr_id) if payload.action
-                    else service.unlike(CREATOR.id, smr_id))
+    result = await (service.like(current_user.id, smr_id) if payload.action
+                    else service.unlike(current_user.id, smr_id))
     if result is None:
         raise HTTPException(404)
     return result

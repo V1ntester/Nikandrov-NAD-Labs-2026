@@ -5,7 +5,6 @@ from db.base import Base
 class Like(Base):
     __tablename__ = "likes"
 
-    id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     smr_id = Column(Integer, ForeignKey("smrs.id"), nullable=False)
 

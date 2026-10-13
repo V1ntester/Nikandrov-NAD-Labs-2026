@@ -125,7 +125,7 @@ class SmrService:
         user_id: int,
         smr_id: int
     ) -> Like | None:
-        like = await self.like_repo.get(user_id=user_id, smr_id=smr_id)
+        like = await self.like_repo.get(user_id, smr_id)
         if like is not None:
             await self.like_repo.delete(like)
             await self.db.commit()

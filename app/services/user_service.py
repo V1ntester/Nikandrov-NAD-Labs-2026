@@ -19,7 +19,8 @@ class UserService:
     ) -> User:
         user = User(
             username = payload.username,
-            password_hash = payload.password
+            password_hash = payload.password,
+            role = "guest"
         )
         user = await self.user_repo.add(user)
         await self.db.commit()
