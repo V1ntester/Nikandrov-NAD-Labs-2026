@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -36,8 +36,22 @@ class SmrOut(SmrBase):
     created_at: datetime
 
 
+class SmrListItem(SmrOut):
+    is_owner: bool = False
+    is_liked: bool = False
+    likes_count: int
+
+    @classmethod
+    def from_smr(cls, smr, user_id: int | None) -> "SmrListItem":
+        obj = cls.model_validate(smr)
+        obj.is_owner = user_id is not None and smr.creator_id == user_id
+        obj.is_liked = bool(getattr(smr, "is_liked", False))
+        obj.likes_count = int(getattr(smr, "likes_count", 0) or 0)
+        return obj
+
+
 class SmrListResponse(BaseModel):
-    smrs: list[SmrOut]
+    smrs: list[SmrListItem]
 
 
 class SmrLike(BaseModel):

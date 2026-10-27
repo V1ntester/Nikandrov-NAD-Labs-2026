@@ -13,8 +13,8 @@ class Smr(Base):
     image_url = Column(String(1000), nullable=True)
     video_url = Column(String(1000), nullable=True)
 
-    description = Column(String(500), nullable=True)
-    thermal_power = Column(Integer, nullable=True)
+    description = Column(String(500), default="Малый модульный реактор")
+    thermal_power = Column(Integer, default="100")
     electrical_power = Column(Integer, nullable=True)
 
     status = Column(String(20), nullable=False, default="draft", index=True)

@@ -20,21 +20,26 @@ class SmrService:
     async def get_all(
         self,
         filter_min: int | None = None,
-        filter_max: int | None = None
+        filter_max: int | None = None,
+        user_id: int | None = None,
     ) -> list[Smr]:
-        return await self.smr_repo.get_formed_with_filters(filter_min, filter_max)
+        return await self.smr_repo.get_formed_with_filters(
+            filter_min, filter_max, user_id
+        )
 
     async def get_by_id(
         self,
-        smr_id: int
+        smr_id: int,
+        user_id: int | None = None,
     ) -> Smr | None:
-        return await self.smr_repo.get_by_id(smr_id)
+        return await self.smr_repo.get_by_id(smr_id, user_id)
 
     async def get_next_by_id(
         self,
-        smr_id: int
+        smr_id: int,
+        user_id: int | None = None,
     ) -> Smr | None:
-        return await self.smr_repo.get_next_by_id(smr_id)
+        return await self.smr_repo.get_next_by_id(smr_id, user_id)
 
     async def get_draft(
         self,
@@ -60,6 +65,9 @@ class SmrService:
 
         smr = await self.smr_repo.add(smr)
         await self.db.commit()
+
+        smr.likes_count = 0
+        smr.is_liked = False
         return smr
 
     async def publish(
@@ -80,6 +88,9 @@ class SmrService:
 
         smr = await self.smr_repo.update(smr)
         await self.db.commit()
+
+        smr.likes_count = 0
+        smr.is_liked = False
         return smr
 
     async def delete(

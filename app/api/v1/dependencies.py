@@ -67,6 +67,42 @@ async def get_current_user(
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
+async def get_current_user_optional(
+    request: Request,
+    service: UserServiceDep,
+    sessions: SessionServiceDep,
+) -> User | None:
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        return None
+
+    user_id = await sessions.get_user_id(session_id)
+
+    if user_id is None:
+        return None
+
+    try:
+        user_id_int = int(user_id)
+    except (TypeError, ValueError):
+        await sessions.delete_session(session_id)
+        return None
+
+    user = await service.get_by_id(user_id_int)
+
+    if user is None:
+        await sessions.delete_session(session_id)
+        return None
+
+    return user
+
+
+CurrentUserOptional = Annotated[
+    User | None,
+    Depends(get_current_user_optional),
+]
+
+
 def require_role(role: str):
     async def role_checker(current_user: CurrentUser) -> User:
         if current_user.role != role:
