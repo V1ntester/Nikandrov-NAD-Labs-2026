@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, File, UploadFile, Form, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.v1.dependencies import CurrentUser, CreatorUser, CurrentUserOptional
+from api.v1.dependencies import CurrentUser, CurrentUserOptional
 from db.session import get_db
 from services.smr_service import SmrService
 from storage.service import upload_file
@@ -59,7 +59,7 @@ async def get_smrs(
 )
 async def get_draft(
     service: SmrServiceDep,
-    current_user: CreatorUser,
+    current_user: CurrentUser,
 ):
     smr = await service.get_draft(current_user.id)
     if smr is None:
@@ -95,7 +95,7 @@ async def get_smr(
 )
 async def create_smr(
     service: SmrServiceDep,
-    current_user: CreatorUser,
+    current_user: CurrentUser,
     name: str = Form(...),
     manufacturer: str = Form(...),
     image: UploadFile | None = File(None),
@@ -133,7 +133,7 @@ async def create_smr(
 )
 async def publish_smr(
     service: SmrServiceDep,
-    current_user: CreatorUser,
+    current_user: CurrentUser,
     payload: SmrPublish
 ):
     smr = await service.publish(payload, current_user.id)
@@ -149,7 +149,7 @@ async def publish_smr(
 )
 async def delete_smr(
     service: SmrServiceDep,
-    current_user: CreatorUser,
+    current_user: CurrentUser,
     smr_id: int,
 ):
     smr = await service.delete(smr_id, current_user.id)

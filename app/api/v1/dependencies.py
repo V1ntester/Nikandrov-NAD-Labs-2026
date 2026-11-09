@@ -101,14 +101,3 @@ CurrentUserOptional = Annotated[
     User | None,
     Depends(get_current_user_optional),
 ]
-
-
-def require_role(role: str):
-    async def role_checker(current_user: CurrentUser) -> User:
-        if current_user.role != role:
-            raise HTTPException(403)
-        return current_user
-    return role_checker
-
-
-CreatorUser = Annotated[User, Depends(require_role("creator"))]

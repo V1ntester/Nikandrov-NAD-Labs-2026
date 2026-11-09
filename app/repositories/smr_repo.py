@@ -1,4 +1,4 @@
-from sqlalchemy import select, func, exists
+from sqlalchemy import select, func, exists, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.smr import Smr
@@ -89,7 +89,10 @@ class SmrRepository:
         stmt = select(Smr, likes_count)
         if is_liked_expr is not None:
             stmt = stmt.add_columns(is_liked_expr.label("is_liked"))
-        stmt = stmt.where(Smr.id == smr_id)
+        visible = Smr.status == "formed"
+        if user_id is not None:
+            visible = or_(visible, (Smr.status == "draft") & (Smr.creator_id == user_id))
+        stmt = stmt.where(Smr.id == smr_id, visible)
 
         result = await self.db.execute(stmt)
         row = result.first()
