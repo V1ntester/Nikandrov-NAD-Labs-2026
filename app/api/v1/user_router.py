@@ -37,7 +37,6 @@ async def login(
     response.set_cookie(
         key=SESSION_COOKIE,
         value=session_id,
-        httponly=True,
         max_age=SESSION_TTL,
         samesite="lax"
     )
@@ -63,7 +62,6 @@ async def logout(
     response.delete_cookie(
         SESSION_COOKIE,
         path="/",
-        httponly=True,
         samesite="lax"
     )
 
