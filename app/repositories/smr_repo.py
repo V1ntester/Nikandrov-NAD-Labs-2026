@@ -117,14 +117,13 @@ class SmrRepository:
             stmt = stmt.add_columns(is_liked_expr.label("is_liked"))
         stmt = (
             stmt
-            .where(Smr.id > smr_id)
             .where(Smr.status == "formed")
-            .order_by(Smr.id)
+            .order_by(Smr.id <= smr_id, Smr.id)
             .limit(1)
         )
 
         result = await self.db.execute(stmt)
-        row = result.first()
+        row = result.one_or_none()
         if row is None:
             return None
 
